@@ -78,6 +78,7 @@
   </el-row>
 </template>
 <script>
+  import {addTag, getTagList, editTag, deleteTag, deleteTags} from '../../api/api';
   export default{
     data(){
       return {
@@ -139,7 +140,7 @@
         };
         this.listLoading = true;
         //NProgress.start();
-        this.$http.post('/api/getTagList',{"pageNum": para.page,"pageRow": this.pageRow}).then((res) => {
+        this.$http.post(getTagList,{"pageNum": para.page,"pageRow": this.pageRow}).then((res) => {
           console.log(res);
           this.total = res.data.total;
           this.tags = res.data.tagList;
@@ -156,7 +157,7 @@
            this.listLoading = true;
            //NProgress.start();
            let para = {tagId: row.tagId};
-           this.$http.post('/api/deleteTag',para).then((res) => {
+           this.$http.post(deleteTag,para).then((res) => {
              this.listLoading = false;
              //NProgress.done();
              this.$message({
@@ -181,7 +182,7 @@
                this.editLoading = true;
                //NProgress.start();
                let para = Object.assign({}, this.editForm);
-               this.$http.post('/api/editTag',para).then((res) => {
+               this.$http.post(editTag,para).then((res) => {
                  this.editLoading = false;
                  //NProgress.done();
                  this.$message({
@@ -207,7 +208,7 @@
       },
       //新增
       addSubmit: function () {
-        this.$http.post('/api/addTag',{"tagName": this.addForm.name,"tagDescription": this.addForm.description}).then((res) => {
+        this.$http.post(addTag,{"tagName": this.addForm.name,"tagDescription": this.addForm.description}).then((res) => {
           // success
           this.addFormVisible = false;
           this.$message({
@@ -230,7 +231,7 @@
           //NProgress.start();
           let para = {tagId: ids};
           console.log(para)
-          this.$http.post('/api/deleteTags',para).then((res) => {
+          this.$http.post(deleteTags,para).then((res) => {
             this.listLoading = false;
             console.log(res)
             //NProgress.done();

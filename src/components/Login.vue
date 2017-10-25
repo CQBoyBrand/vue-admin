@@ -17,6 +17,7 @@
 </template>
 
 <script>
+  import { loginIn } from "../api/api"
   export default {
     data() {
       return {
@@ -42,7 +43,7 @@
         this.$refs.AccountFrom.validate((valid) => {
           if (valid) {
             this.logining = true;
-            this.$http.post('/api/login', {"userName": this.account.username,"password": this.account.pwd}).then((res) => {
+            this.$http.post(loginIn, {"userName": this.account.username,"password": this.account.pwd}).then((res) => {
               // success
               this.logining = false;
               //提示信息

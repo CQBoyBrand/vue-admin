@@ -16,10 +16,7 @@
             <el-input v-model="filters.name" placeholder="文章标题"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" v-on:click="getArticles">查询</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="showAddDialog">新增</el-button>
+            <el-button type="primary" v-on:click="getArticleByTitle">查询</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -69,7 +66,7 @@
   </el-row>
 </template>
 <script>
-
+  import {getArticleList, changeStatus, getArticleByTitle} from "../../api/api"
   export default{
     data(){
       return {
@@ -141,14 +138,27 @@
         this.page = val;
         this.getArticles();
       },
-      //获取用户列表
+      //获取文章列表
       getArticles() {
         let para = {
-          page: this.page,
-          name: this.filters.name
+          pageNum: this.page,
+          pageRow: this.pageRow
         };
         this.listLoading = true;
-        this.$http.post('/api/getArticle',{"pageNum": this.page,"pageRow": this.pageRow}).then((res) => {
+        this.$http.post(getArticleList,para).then((res) => {
+          console.log(res)
+          this.total = res.data.total;
+          this.articles = res.data.artList;
+          this.listLoading = false;
+        })
+      },
+      //根据标题获取文章
+      getArticleByTitle() {
+        let para = {
+          artTitle: this.filters.name
+        };
+        this.listLoading = true;
+        this.$http.post(getArticleByTitle,para).then((res) => {
           console.log(res)
           this.total = res.data.total;
           this.articles = res.data.artList;
@@ -160,7 +170,7 @@
         this.$confirm('确认修改该记录状态吗?', '提示', {type: 'warning'}).then(() => {
           this.listLoading = true;
           let para = {artId: row.artId,published: published};
-          this.$http.post('/api/changeArtState', para).then((res) => {
+          this.$http.post(changeStatus, para).then((res) => {
             console.log(res)
             this.listLoading = false;
             this.$message({
@@ -172,66 +182,10 @@
         }).catch(() => {
         });
       },
-      //显示编辑界面
+      //编辑按钮
       showEditDialog: function (index, row) {
-        this.editFormVisible = true;
-        this.editForm = Object.assign({}, row);
-      },
-      //编辑
-      editSubmit: function () {
-        this.$refs.editForm.validate((valid) => {
-          if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
-              this.editLoading = true;
-              //NProgress.start();
-              let para = Object.assign({}, this.editForm);
-              para.publishAt = (!para.publishAt || para.publishAt == '') ? '' : util.formatDate.format(new Date(para.publishAt), 'yyyy-MM-dd');
-              reqEditBook(para).then((res) => {
-                this.editLoading = false;
-                //NProgress.done();
-                this.$message({
-                  message: '提交成功',
-                  type: 'success'
-                });
-                this.$refs['editForm'].resetFields();
-                this.editFormVisible = false;
-                this.getArticles();
-              });
-            });
-          }
-        });
-      },
-      showAddDialog: function () {
-        this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        };
-      },
-      //新增
-      addSubmit: function () {
-        this.$refs.addForm.validate((valid) => {
-          if (valid) {
-            this.addLoading = true;
-            //NProgress.start();
-            let para = Object.assign({}, this.addForm);
-            para.publishAt = (!para.publishAt || para.publishAt == '') ? '' : util.formatDate.format(new Date(para.publishAt), 'yyyy-MM-dd');
-            reqAddBook(para).then((res) => {
-              this.addLoading = false;
-              //NProgress.done();
-              this.$message({
-                message: '提交成功',
-                type: 'success'
-              });
-              this.$refs['addForm'].resetFields();
-              this.addFormVisible = false;
-              this.getArticles();
-            });
-          }
-        });
-      },
+        alert("编辑")
+      }
     },
     mounted() {
       this.getArticles();
