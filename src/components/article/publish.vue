@@ -47,7 +47,7 @@
             </div>
             <div class="editorContainer">
               <markdown
-                :mdValuesP="msg.mdValue"
+                :mdValuesP="ruleForm.artContent"
                 :fullPageStatusP="false"
                 :editStatusP="true"
                 :previewStatusP="true"
@@ -87,9 +87,6 @@
       return {
         msgShow:'我要显示的内容',
         dilogStatus:false,
-        msg: {
-          mdValue:'## Vue-markdownEditor'
-        },
         ruleForm: {
           artTitle: '',
           artType: '',
@@ -98,7 +95,7 @@
           artTag: '',
           artAbstract: '',
           published: 0,//1：公开；0：私密
-          artContent: '1234'
+          artContent: ''
         },
         rules: {
           artTitle: [
@@ -125,7 +122,7 @@
     methods: {
       childEventHandler:function(res){
         // res会传回一个data,包含属性mdValue和htmlValue，具体含义请自行翻译
-        this.msg=res;
+        this.ruleForm.artContent=res.htmlValue;
       },
       getMdValueFn:function(){
         this.msgShow=this.msg.mdValue;
