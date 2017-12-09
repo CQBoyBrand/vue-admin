@@ -10,6 +10,7 @@
 
     <el-col :span="24" class="warp-main">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+        <el-input type="hidden" v-model="ruleForm.artId"></el-input>
         <el-form-item>
           <el-col :span="11" class="title">
             <el-form-item label="文章标题" prop="artTitle">
@@ -22,7 +23,6 @@
                 <el-option label="Home" value="Home"></el-option>
                 <el-option label="Code" value="Code"></el-option>
                 <el-option label="Note" value="Note"></el-option>
-                <el-option label="About" value="About"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -31,6 +31,13 @@
               <el-select v-model="ruleForm.artTag" placeholder="请选择标签">
                 <el-option v-for="option in ruleForm.tagList" :key="option.tagId" :label="option.tagName" :value="option.tagId"></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-col :span="24" class="thumb">
+            <el-form-item label="缩略图地址" prop="artThumb">
+              <el-input v-model="ruleForm.artThumb"></el-input>
             </el-form-item>
           </el-col>
         </el-form-item>
@@ -61,10 +68,10 @@
         <el-form-item>
           <el-row :gutter="20">
             <el-col :span="4">
-              <el-button type="primary" @click="submitForm('ruleForm')">立即发布</el-button>
-
+              <el-button type="primary" v-if="publishShow" @click="submitForm('ruleForm')">立即发布</el-button>
+             <el-button type="primary" v-if="editShow" @click="saveChange('ruleForm')">保存编辑</el-button>
             </el-col>
-            <el-col :span="12">
+            <el-col v-if="publishShow" :span="12">
               <el-form-item label="发布时间" prop="artCdate" required>
                 <el-date-picker @change="setDate" v-model="ruleForm.artCdate" type="datetime" placeholder="选择日期时间"></el-date-picker>
               </el-form-item>
@@ -77,8 +84,9 @@
 
 </template>
 <script>
-  import {addArticle ,getTag} from "../../api/api"
+  import {addArticle ,getTag , getArtDetailById, editArticle} from "../../api/api"
   import markdown from '../../components/article/markdown'
+  import Vue from "vue"
   export default {
     components: {
       markdown
@@ -87,7 +95,10 @@
       return {
         msgShow:'我要显示的内容',
         dilogStatus:false,
+        publishShow: true,//发布按钮显示
+        editShow: false,//编辑按钮隐藏
         ruleForm: {
+          artId:'',
           artTitle: '',
           artType: '',
           artCdate: '',
@@ -95,7 +106,8 @@
           artTag: '',
           artAbstract: '',
           published: 0,//1：公开；0：私密
-          artContent: ''
+          artContent: '',
+          artThumb: ''
         },
         rules: {
           artTitle: [
@@ -115,14 +127,20 @@
           ],
           artCdate: [
             { required: true, message: '请选择日期时间', trigger: 'change' }
+          ],
+          artThumb: [
+            { required: true, message: '请填写缩略图地址', trigger: 'change' }
           ]
         }
       };
     },
+    watch:{
+      ruleForm: 'getArtDetail'
+    },
     methods: {
       childEventHandler:function(res){
         // res会传回一个data,包含属性mdValue和htmlValue，具体含义请自行翻译
-        this.ruleForm.artContent=res.htmlValue;
+        this.ruleForm.artContent = res.mdValue;
       },
       getMdValueFn:function(){
         this.msgShow=this.msg.mdValue;
@@ -152,24 +170,60 @@
                 });
                 this.$router.push({path: '/article/list'})
               }
-              console.log("Res="+JSON.stringify(res));
             })
           } else {
             console.log('error submit!!');
             return false;
           }
         });
+      },
+      //编辑保存
+      saveChange(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$http.post(editArticle,this.ruleForm).then((res) => {
+              if(res.data.code == 0){
+                this.$message({
+                  message: res.data.message
+                });
+                this.$router.push({path: '/article/list'})
+              }
+            })
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      getArtDetail(){
+        this.$http.post(getArtDetailById,{artId: this.$route.query.artId}).then((res) => {
+          this.ruleForm.artTitle = res.data.article[0].artTitle;
+          this.ruleForm.artType = res.data.article[0].artType;
+          this.ruleForm.artThumb = res.data.article[0].artThumb;
+          this.ruleForm.artCdate = res.data.article[0].artCdate;
+          this.ruleForm.artAbstract = res.data.article[0].artAbstract;
+          this.ruleForm.artTag = res.data.article[0].artTag;
+          this.ruleForm.artContent = res.data.article[0].artContent;
+        })
       }
     },
-    mounted (){
+    created (){
+      //获取标签
       this.$http.get(getTag).then((res) => {
         this.ruleForm.tagList = res.data.tagList;
       })
-    }
+      //changeArticle
+      if(this.$route.query.artId){
+        this.ruleForm.artId = this.$route.query.artId;
+        this.publishShow = false;
+        this.editShow = true;
+        this.getArtDetail()
+      }
+    },
   }
 </script>
 <style lang="scss" scoped>
-  .title {margin-left: -100px;}
+  .title,.thumb {margin-left: -100px;}
   /*编辑器样式*/
   .show{
     position: absolute;

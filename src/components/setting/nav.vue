@@ -140,7 +140,6 @@
         this.listLoading = true;
         //NProgress.start();
         this.$http.post('/api/getTagList',{"pageNum": para.page,"pageRow": this.pageRow}).then((res) => {
-          console.log(res);
           this.total = res.data.total;
           this.tags = res.data.tagList;
           this.listLoading = false;
@@ -229,10 +228,8 @@
           //this.listLoading = true;
           //NProgress.start();
           let para = {tagId: ids};
-          console.log(para)
           this.$http.post('/api/deleteTags',para).then((res) => {
             this.listLoading = false;
-            console.log(res)
             //NProgress.done();
             this.$message({
               message: '删除成功',

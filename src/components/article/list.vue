@@ -146,7 +146,6 @@
         };
         this.listLoading = true;
         this.$http.post(getArticleList,para).then((res) => {
-          console.log(res)
           this.total = res.data.total;
           this.articles = res.data.artList;
           this.listLoading = false;
@@ -155,11 +154,12 @@
       //根据标题获取文章
       getArticleByTitle() {
         let para = {
-          artTitle: this.filters.name
+          artTitle: this.filters.name,
+          pageNum: this.page,
+          pageRow: this.pageRow
         };
         this.listLoading = true;
         this.$http.post(getArticleByTitle,para).then((res) => {
-          console.log(res)
           this.total = res.data.total;
           this.articles = res.data.artList;
           this.listLoading = false;
@@ -171,7 +171,6 @@
           this.listLoading = true;
           let para = {artId: row.artId,published: published};
           this.$http.post(changeStatus, para).then((res) => {
-            console.log(res)
             this.listLoading = false;
             this.$message({
               message: res.data.message,
@@ -184,7 +183,7 @@
       },
       //编辑按钮
       showEditDialog: function (index, row) {
-        alert("编辑")
+        this.$router.push({path: '/article/publish',query: {artId: row.artId}})
       }
     },
     mounted() {

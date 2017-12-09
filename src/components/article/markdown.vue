@@ -29,7 +29,7 @@
         </div>
         <div class="mdBodyContainer" :class="{ noMenu: !navStatus }">
             <div class="editContainer" v-if="editStatus">
-                <textarea name="" class="mdEditor" @keydown.9="tabFn" v-scroll="editScroll" v-model="input"></textarea>
+                <textarea name="" :inputFn="inputFn" class="mdEditor" @keydown.9="tabFn" v-scroll="editScroll" v-model="input"></textarea>
             </div>
             <div class="previewContainer markdown-body" v-scroll="previewScroll" v-html="compiledMarkdown" v-if="previewStatus">
             </div>
@@ -255,6 +255,9 @@
             }
         },
         computed: {
+          inputFn: function () {
+            this.input = this.mdValuesP
+          },
             compiledMarkdown: function() {
                 return marked(this.input, {
                     sanitize: true

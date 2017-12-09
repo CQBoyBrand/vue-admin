@@ -51,7 +51,7 @@
                 message: res.data.message
               });
               if(res.data.code === 4){
-                sessionStorage.setItem('access-user', JSON.stringify(this.account.username));
+                sessionStorage.setItem('login-user', JSON.stringify(this.account.username));
                 this.$router.push({ path: '/' });
               }
             }, (error) => {

@@ -25,7 +25,7 @@
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="tagName" label="名称" width="200" sortable></el-table-column>
         <el-table-column prop="tagDescription" label="描述" sortable></el-table-column>
-        <el-table-column prop="articleNum" label="文章数" width="150" sortable></el-table-column>
+        <el-table-column prop="artNum" label="文章数" width="150" sortable></el-table-column>
         <el-table-column label="操作" width="150">
           <template scope="scope">
             <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
@@ -141,7 +141,6 @@
         this.listLoading = true;
         //NProgress.start();
         this.$http.post(getTagList,{"pageNum": para.page,"pageRow": this.pageRow}).then((res) => {
-          console.log(res);
           this.total = res.data.total;
           this.tags = res.data.tagList;
           this.listLoading = false;
@@ -230,10 +229,8 @@
           //this.listLoading = true;
           //NProgress.start();
           let para = {tagId: ids};
-          console.log(para)
           this.$http.post(deleteTags,para).then((res) => {
             this.listLoading = false;
-            console.log(res)
             //NProgress.done();
             this.$message({
               message: '删除成功',

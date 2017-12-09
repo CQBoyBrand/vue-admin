@@ -74,10 +74,10 @@ let router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.path.startsWith('/login')) {
-    window.sessionStorage.removeItem('access-user');
+    window.sessionStorage.removeItem('login-user');
     next()
   } else {
-    let user = JSON.parse(window.sessionStorage.getItem('access-user'))
+    let user = JSON.parse(window.sessionStorage.getItem('login-user'))
     if (!user) {
       next({path: '/login'})
     } else {
