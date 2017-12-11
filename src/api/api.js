@@ -1,7 +1,7 @@
 /**
  * Created By brand On 2017/10/17
  */
-const _URL="http://api.brandhuang.com:3100";
+const _URL="http://localhost:3100";
 
 module.exports= {
   //user
