@@ -6,6 +6,7 @@ import Dashboard from '@/components/Dashboard'
 import ArticleList from '@/components/article/list'
 import ArticleAdd from '@/components/article/publish'
 import TagList from '@/components/tag/list'
+import LinkList from '@/components/link/list'
 
 import UserChangePwd from '@/components/setting/changepwd'
 import UserProfile from '@/components/setting/profile'
@@ -55,6 +56,16 @@ let router = new Router({
       iconCls: 'iconfont icon-books',
       children: [
         {path: '/tag/list', component: TagList, name: '标签列表', menuShow: true}
+      ]
+    },
+    {
+      path: '/',
+      component: Home,
+      name: '友情链接',
+      menuShow: true,
+      iconCls: 'iconfont icon-books',
+      children: [
+        {path: '/link/list', component: LinkList, name: '友链列表', menuShow: true}
       ]
     },
     {
