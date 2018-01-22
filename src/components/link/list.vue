@@ -122,7 +122,7 @@
         addForm: {
           linkId: '',
           linkName: '',
-          linkAddress: ''
+          linkAddress: 'http://'
         }
       }
     },
@@ -199,7 +199,7 @@
         this.addForm = {
           linkId: '',
           linkName: '',
-          linkAddress: ''
+          linkAddress: 'http://'
         };
       },
       //新增
