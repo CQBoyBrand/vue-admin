@@ -25,6 +25,8 @@
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="linkName" label="网站名称" width="200" sortable></el-table-column>
         <el-table-column prop="linkAddress" label="网站地址" sortable></el-table-column>
+        <el-table-column prop="linkAvatar" label="头像" sortable></el-table-column>
+        <el-table-column prop="linkDescription" label="简介" sortable></el-table-column>
         <el-table-column label="操作" width="150">
           <template scope="scope">
             <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
@@ -50,6 +52,12 @@
           <el-form-item label="网站地址" prop="Address">
             <el-input  v-model="editForm.linkAddress" ></el-input>
           </el-form-item>
+          <el-form-item label="头像" prop="Avatar">
+            <el-input  v-model="editForm.linkAvatar" ></el-input>
+          </el-form-item>
+          <el-form-item label="简介" prop="Description">
+            <el-input  v-model="editForm.linkDescription" ></el-input>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="editFormVisible = false">取消</el-button>
@@ -65,6 +73,12 @@
           </el-form-item>
           <el-form-item label="网站地址" prop="linkAddress">
             <el-input  v-model="addForm.linkAddress" ></el-input>
+          </el-form-item>
+          <el-form-item label="头像" prop="linkAvatar">
+            <el-input  v-model="addForm.linkAvatar" ></el-input>
+          </el-form-item>
+          <el-form-item label="简介" prop="linkDescription">
+            <el-input  v-model="addForm.linkDescription" ></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -105,7 +119,9 @@
         editForm: {
           linkId: '',
           linkName: '',
-          linkAddress: ''
+          linkAddress: '',
+          linkAvatar: '',
+          linkDescription:''
         },
 
         //新增相关数据
@@ -122,7 +138,9 @@
         addForm: {
           linkId: '',
           linkName: '',
-          linkAddress: 'http://'
+          linkAddress: 'http://',
+          linkAvatar: '',
+          linkDescription:''
         }
       }
     },
@@ -199,12 +217,14 @@
         this.addForm = {
           linkId: '',
           linkName: '',
-          linkAddress: 'http://'
+          linkAddress: 'http://',
+          linkAvatar: 'http://',
+          linkDescription:'此博主有点害羞，没有做自我介绍~'
         };
       },
       //新增
       addSubmit: function () {
-        this.$http.post(addLink,{"linkName": this.addForm.linkName,"linkAddress": this.addForm.linkAddress}).then((res) => {
+        this.$http.post(addLink,{"linkName": this.addForm.linkName,"linkAddress": this.addForm.linkAddress,"linkAvatar": this.addForm.linkAvatar,"linkDescription": this.addForm.linkDescription}).then((res) => {
           // success
           this.addFormVisible = false;
           this.$message({
